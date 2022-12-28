@@ -11,9 +11,7 @@ class MockTestPluginPlatform
   Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future<String?> getModelName() {
-    throw UnimplementedError();
-  }
+  Future<String?> getModelName() => Future.value('Iphone 12');
 }
 
 void main() {
@@ -29,5 +27,13 @@ void main() {
     TestPluginPlatform.instance = fakePlatform;
 
     expect(await testPlugin.getPlatformVersion(), '42');
+  });
+
+  test('getModelName', () async {
+    TestPlugin testPlugin = TestPlugin();
+    MockTestPluginPlatform fakePlatform = MockTestPluginPlatform();
+    TestPluginPlatform.instance = fakePlatform;
+
+    expect(await testPlugin.getModelName(), 'Iphone 12');
   });
 }

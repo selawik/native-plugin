@@ -1,10 +1,10 @@
 SF:lib/test_plugin.dart
 DA:4,1
 DA:5,2
-DA:8,0
-DA:9,0
+DA:8,1
+DA:9,2
 LF:4
-LH:2
+LH:4
 end_of_record
 SF:lib/test_plugin_method_channel.dart
 DA:12,1
