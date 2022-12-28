@@ -10,7 +10,12 @@ void main() {
 
   setUp(() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
+      switch (methodCall.method) {
+        case 'getPlatformVersion':
+          return '42';
+        case 'getModelName':
+          return 'Iphone 12';
+      }
     });
   });
 
@@ -20,5 +25,9 @@ void main() {
 
   test('getPlatformVersion', () async {
     expect(await platform.getPlatformVersion(), '42');
+  });
+
+  test('getModelName', () async {
+    expect(await platform.getModelName(), 'Iphone 12');
   });
 }
