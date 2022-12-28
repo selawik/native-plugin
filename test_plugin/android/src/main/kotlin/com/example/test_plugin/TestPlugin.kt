@@ -1,5 +1,6 @@
 package com.example.test_plugin
 
+import android.os.Build.*
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -22,10 +23,13 @@ class TestPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+
+    when (call.method) {
+      "getPlatformVersion" -> result.success("Android ${VERSION.RELEASE}")
+      "getModelName" -> result.success("Device: $MANUFACTURER $MODEL")
+      else ->  {
+        result.notImplemented()
+      }
     }
   }
 
