@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:test_plugin/test_plugin.dart';
 
@@ -16,36 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   final _testPlugin = TestPlugin();
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _testPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +25,73 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Builder(builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => _onShowPlatformVersionPressed(context),
+                  child: const Text('Get OS version'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _onShowModelPressed(context),
+                  child: const Text('Get device name'),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
+  }
+
+  void _onShowModelPressed(BuildContext context) async {
+    var modelName = await _getModelName();
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(modelName)));
+  }
+
+  void _onShowPlatformVersionPressed(BuildContext context) async {
+    var platformVersion = await _getPlatformVersion();
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(platformVersion)));
+  }
+
+  Future<String> _getModelName() async {
+    String model;
+
+    try {
+      model = await _testPlugin.getModelName() ?? 'Unknown model version';
+    } on PlatformException {
+      model = 'Failed to get device info.';
+    }
+
+    return model;
+  }
+
+  Future<String> _getPlatformVersion() async {
+    String model;
+
+    try {
+      model =
+          await _testPlugin.getPlatformVersion() ?? 'Unknown platform version';
+    } on PlatformException {
+      model = 'Failed to get platform version.';
+    }
+
+    return model;
   }
 }

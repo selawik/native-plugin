@@ -26,4 +26,8 @@ abstract class TestPluginPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<String?> getModelName() {
+    throw UnimplementedError('modelName() has not been implemented.');
+  }
 }
